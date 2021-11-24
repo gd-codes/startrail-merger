@@ -4,12 +4,13 @@ and save them to disk individually.
 """
 
 from PIL import Image
+import numpy as np
 import os
 import glob
 
 # -------------------------------------------
 # Edit these parameters as required
-INFILES = glob.glob('test/4J7A0149.JPG')
+INFILES = glob.glob('test/4J7A0146_*.jpg')
 CREATE_DIRS = True
 SIZE = 128
 OFFSETS = [(0, 0) for f in INFILES]
@@ -21,6 +22,7 @@ if __name__ == '__main__' :
         print("Warning : No files were processed")
 
     for addr, off in zip(INFILES, OFFSETS):
+        print(addr)
         fname, ext = os.path.splitext(addr)
         loc, fname = os.path.split(fname)
         if CREATE_DIRS :
@@ -36,4 +38,6 @@ if __name__ == '__main__' :
         for ix, x in enumerate(range(off[0], src.width-SIZE+1, SIZE)):
             for iy, y in enumerate(range(off[1], src.height-SIZE+1, SIZE)):
                 section = src.crop((x, y, x+SIZE, y+SIZE))
+                # if np.array(section).max() > 180 :
+                #     section.save(OUT_PREFIX + f"{ix}_{iy}" + ext)
                 section.save(OUT_PREFIX + f"{ix}_{iy}" + ext)
